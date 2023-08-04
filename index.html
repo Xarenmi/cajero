@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta author="Xarenmi">
+    <link rel="stylesheet" href="src/style.css">
+    <title>XIVI - Bank</title>
+</head>
+
+<body>
+    <header>
+        <div id="header">
+            <h1 class="hidden">Bienvenido</h1>
+            <img src="src/icons/XB_Logo.png" alt="XIVI BANK LOGO" id="logo" />
+            <h1 class="hidden">Bienvenido</h1>
+        </div>
+    </header>
+
+    <section id="login">
+        <div id="userbox" class="container">
+            <p> NÚMERO DE CLIENTE:</p>
+            <input id="user" type="text" placeholder="">
+            <button id="checkUser"> CONTINUAR </button>
+        </div>
+        <div id="passwordbox" class="container hidden">
+            <p> CONTRASEÑA:</p>
+            <input id="password" type="text" placeholder="">
+            <button id="checkPassword"> INICIAR SESIÓN </button>
+        </div>
+    </section>
+
+    <main class="wrapper">
+        <section id="operations" class="">
+            <div class="container" id="balance">
+                <img src="src/icons/account.svg" alt="Saldo" />
+                <p id="amount">$000</p>
+            </div>
+            <div class="container">
+                <div class="o_item" id="add">
+                    <img src="src/icons/deposit.svg" alt="Depositar" /><br>
+                    <p>DEPOSITAR</p>
+                </div>
+                <div class="o_item" id="withdraw">
+                    <img src="src/icons/withdraw.svg" alt="Retirar" /><br>
+                    <p>RETIRAR</p>
+                </div>
+                <div class="o_item" id="request">
+                    <img src="src/icons/request.svg" alt="Solicitar Transferencia" /><br>
+                    <p>SOLICITAR DINERO</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="o_item" id="pay">
+                    <img src="src/icons/finenotif.svg" alt="Realizar Pago" /><br>
+                    <p>REALIZAR PAGO</p>
+                </div>
+                <div class="o_item" id="send">
+                    <img src="src/icons/send.svg" alt="Transferir" /><br>
+                    <p>TRANSFERIR</p>
+                </div>
+                <div class="o_item" id="exit">
+                    <img src="src/icons/exit.svg" alt="Salir" /><br>
+                    <p>SALIR</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="hidden" id="movements">
+            <div class="container">
+                <div class="">
+                    <p></p>
+                    <input id="o_user">
+                    <p>Ingrese el monto de la operación:</p>
+                    <input id="o_amount">
+                </div>
+            </div>
+            <div class="container">
+                <div class="m_item">
+                    <p>1</p>
+                </div>
+                <div class="m_item">
+                    <p>2</p>
+                </div>
+                <div class="m_item">
+                    <p>3</p>
+                </div>
+                <div class="m_item" id="erase">
+                    <p>BORRAR</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="m_item">
+                    <p>4</p>
+                </div>
+                <div class="m_item">
+                    <p>5</p>
+                </div>
+                <div class="m_item">
+                    <p>6</p>
+                </div>
+                <div class="m_item" id="zero">
+                    <p>0</p>
+                </div>
+            </div>
+            <div class="container">
+                <div class="m_item">
+                    <p>7</p>
+                </div>
+                <div class="m_item">
+                    <p>8</p>
+                </div>
+                <div class="m_item">
+                    <p>9</p>
+                </div>
+                <div class="m_item" id="back">
+                    <p>REGRESAR</p>
+                </div>
+            </div>
+            <div class="container">
+                <button>CONFIRMAR</button>
+            </div>
+        </section>
+    </main>
+    <script src="src/db.js"></script>
+    <script src="src/script.js"></script>
+
+</body>
+
+</html>
