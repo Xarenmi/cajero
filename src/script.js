@@ -230,8 +230,19 @@ o_buttons.forEach(btn => {
             messageDisplay.classList.add('hidden');
         }
 
+        //Switch button design ٩(◕‿◕｡)۶
+        o_buttons.forEach(element => { 
+            if(element.id !== btn.id){
+                if(element.classList.contains('active')){
+                    element.classList.remove('active');
+                }
+            } else {
+                element.classList.add('active');
+            }
+        });
+
         switch (btn.id) {
-            case 'exit':
+            case 'exit':   
                 location.reload();
                 break;
             case 'add':

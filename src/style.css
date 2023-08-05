@@ -113,6 +113,12 @@ button {
     margin: 12px;
 }
 
+.active {
+    border: none;
+    background-color: #A554D3;
+    filter: invert(1);
+  }
+
 .o_item p {
     font-size: 14px;
     color: black;
