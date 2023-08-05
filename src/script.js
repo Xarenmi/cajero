@@ -39,6 +39,11 @@ const userbtn = document.querySelector('#checkUser');
 const passbox = document.querySelector('#passwordbox');
 const passbtn = document.querySelector('#checkPassword');
 
+//Elementos del temp User
+const newUser = document.getElementById('newUser');
+const newUserInfo = newUser.querySelectorAll('input');
+const confirmNewUser = newUser.querySelector('button');
+
 //Elementos en el operation container
 const operations = document.querySelector('#operations');
 const balance = document.querySelector('#amount');
@@ -59,7 +64,9 @@ const confirm = document.getElementById('confirm');
 
 // Footer
 const messageDisplay = document.getElementById('message');
+const fillCheck = document.getElementById('fillCheck');
 messageDisplay.classList.add('hidden');
+fillCheck.classList.add('hidden');
 
 // Login
 let tempUser = '';
@@ -86,9 +93,6 @@ userToPass.addEventListener('keydown', (event) => {
     }
 });
 
-
-//WHAT IF USER DOESN'T EXIST??
-
 passbtn.addEventListener('click', () => {
     tempPass = passwordToPass.value;
     let counter = 0;
@@ -103,6 +107,9 @@ passbtn.addEventListener('click', () => {
         }
     }
     if (counter == 0) {
+        passbox.classList.add('hidden');
+        userToPass.value = '';
+        passwordToPass.value = '';
         generateUser();
     }
 });
@@ -113,12 +120,8 @@ passwordToPass.addEventListener('keydown', (event) => {
         let counter = 0;
         for (const client of clients) {
             if (client.id === tempUser && client.password === tempPass) {
-                balance.textContent = client.saldo.toString();
-                passbox.classList.add('hidden');
-                operations.classList.remove('hidden');
-                welcome.textContent = `Bienvenido ${client.name} ${client.lastname}`;
-                welcome.classList.remove('hidden');
                 counter = 1;
+                loadClientArea();
             }
         }
         if (counter == 0) {
@@ -127,15 +130,90 @@ passwordToPass.addEventListener('keydown', (event) => {
     }
 });
 
+function loadClientArea() {
+    if (!fillCheck.classList.contains('hidden')) {
+        fillCheck.classList.add('hidden');
+    }
+    // Cliente
+    let user = clients.findIndex(client => client.id === tempUser);
+    balance.textContent = clients[user].saldo.toString();
+
+    if (!passbox.classList.contains('hidden')) {
+        passbox.classList.add('hidden')
+    }
+    if (!newUser.classList.contains('hidden')) {
+        newUser.classList.add('hidden')
+    }
+
+    operations.classList.remove('hidden');
+    welcome.textContent = `Bienvenido ${clients[user].name} ${clients[user].lastname}`;
+    welcome.classList.remove('hidden');
+}
+
 // Generar nuevo cliente (?)
 
 function generateUser() {
-    passbox.classList.add('hidden');
-    userToPass.value = '';
-    passwordToPass.value = '';
+
     const noUser = window.confirm('Cliente no registrado. Desea generar un cliente temporal?');
     if (noUser) {
-        console.log('we\'re ready');
+
+        newUserInfo.forEach(item => {
+            item.value = "";
+        });
+
+        newUser.classList.remove('hidden');
+
+        // GEtting new ID
+
+        let userToLoad = {}
+        let tempId = '123' + (Math.floor(Math.random() * 90000) + 10000).toString();
+
+        clients.forEach(client => {
+            while (client.id === tempId) {
+                tempId = '123' + (Math.floor(Math.random() * 90000) + 10000).toString();
+            }
+            userToLoad.id = tempId;
+        });
+
+        failedToFill = 0;
+        // Gettin' object values
+        confirmNewUser.addEventListener('click', () => {
+
+            newUserInfo.forEach(item => {
+                if (item.value.length > 0) {
+                    newKey = item.id.slice(3);
+                    userToLoad[newKey] = item.value;
+                    failedToFill++;
+                } else {
+                    fillCheck.innerHTML = 'Por favor ingrese todos los datos.'
+                }
+            });
+
+            // Revisando que todos los inputs tengan contenido
+            if (failedToFill < 4) {
+                fillCheck.classList.remove('hidden');
+            } else {
+                if (!fillCheck.classList.contains('hidden')) {
+                    fillCheck.classList.add('hidden');
+                }
+
+                // Add new user
+                userToLoad.saldo = parseInt(userToLoad.saldo);
+                clients.push(userToLoad);
+                tempUser = userToLoad.id;
+                console.log(clients);
+
+                /* If this database was permanent. Anotaría el ID n_nU
+                fillCheck.innerHTML = `Por favor anota tu ID: ${userToLoad.id}`;
+                if (fillCheck.classList.contains('hidden')) {
+                    fillCheck.classList.remove('hidden');
+                }*/
+
+                loadClientArea();
+            }
+
+        });
+
     } else {
         location.reload();
     }
@@ -225,9 +303,9 @@ keyboard.forEach(key => {
                 operations.classList.remove('hidden');
             }
             movements.classList.add('hidden');
-            
-            if(!messageDisplay.classList.contains('hidden')){
-            messageDisplay.classList.add('hidden');
+
+            if (!messageDisplay.classList.contains('hidden')) {
+                messageDisplay.classList.add('hidden');
             }
         }
     });
@@ -238,8 +316,8 @@ keyboard.forEach(key => {
 
 confirm.addEventListener('click', () => {
 
-    refUser = clients.findIndex(client => client.id === o_user.value);
-    actUser = clients.findIndex(client => client.id === tempUser);
+    let refUser = clients.findIndex(client => client.id === o_user.value);
+    let actUser = clients.findIndex(client => client.id === tempUser);
 
     function notEnough() {
         messageDisplay.innerHTML = 'No cuentas con saldo suficiente para realizar ese movimiento.'

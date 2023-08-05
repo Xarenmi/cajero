@@ -31,8 +31,19 @@
         </div>
     </section>
 
-    <section id="newUser">
-
+    <section id="newUser" class="hidden">
+        <div class='newbox'>
+            <h2>Ingrese la siguiente información:</h2>
+            <p>Nombre:</p>
+            <input id='newname' type="text" placeholder="Max"/>
+            <p>Apellido:</p>
+            <input id='newlastname' type="text" placeholder="Power"/>
+            <p>Contraseña:</p>
+            <input id='newpassword' type="password" placeholder="87654321"/>
+            <p>Saldo Inicial:</p>
+            <input id='newsaldo' type="text" placeholder="100"/>
+            <button>Enviar</button>
+        </div>
     </section>
 
     <main class="wrapper">
@@ -129,6 +140,7 @@
     </main>
 
     <footer>
+        <h2 id="fillCheck"></h2>
         <h2 id="message"></h2>
     </footer>
     <script src="src/db.js"></script>

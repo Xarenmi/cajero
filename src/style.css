@@ -222,6 +222,40 @@ h2 {
     text-align: center;
 }
 
+.newbox {
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.newbox h2 {
+    width: 100%;
+}
+
+.newbox p, .newbox input {
+    width: 60%;
+    text-align: left;
+}
+
+.newbox input {
+    height: 25px;
+    margin-bottom: 15px;
+    padding-left: 20px;
+}
+
+.newbox input::placeholder{
+    color: #c2c2c2;
+}
+
+.newbox button{
+    margin-top: 40px;
+}
+
 /* Responsive */
 
 
@@ -258,7 +292,6 @@ h2 {
 
 
     }
-
 
 }
 
@@ -307,6 +340,16 @@ h2 {
         margin-top: 50px;
     }
 
+    .newbox h2 {
+        font-size: 15px;
+    }
+    
+    .newbox p, .newbox input {
+        width: 80%;
+    }
+    
+
+
 }
 
 @media only screen and (max-device-width: 420px) {
@@ -317,7 +360,6 @@ h2 {
     h1 {
         margin-left: 0;
         text-align: center;
-        font-size: 20px;
     }
 
     #operations {
@@ -351,5 +393,9 @@ h2 {
 
     #movements {
         width: 300px;
+    }
+    
+    .newbox p, .newbox input {
+        width: 90%;
     }
 }
