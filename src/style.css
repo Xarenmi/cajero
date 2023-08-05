@@ -213,6 +213,15 @@ img {
     color: #59A52C;
 }
 
+h2 {
+    font-size: 20px;
+    font-weight: 200;
+    padding: 20px 0;
+    color: white;
+    background-color: #59A52C;
+    text-align: center;
+}
+
 /* Responsive */
 
 

@@ -26,7 +26,7 @@ const clients = [
     }]
 
 clients.forEach(client => {
-    console.log('user: ' + client.id + ', password: ' + client.password);
+    console.log(client);
 });
 
 // Elementos en el header
@@ -58,7 +58,8 @@ const reference = movements.querySelector('p');
 const confirm = document.getElementById('confirm');
 
 // Footer
-const message = document.getElementById('message')
+const messageDisplay = document.getElementById('message');
+messageDisplay.classList.add('hidden');
 
 // Login
 let tempUser = '';
@@ -147,6 +148,10 @@ let action = '';
 
 o_buttons.forEach(btn => {
     btn.addEventListener('click', (e) => {
+        if (!messageDisplay.classList.contains('hidden')) {
+            messageDisplay.classList.add('hidden');
+        }
+
         switch (btn.id) {
             case 'exit':
                 location.reload();
@@ -164,7 +169,7 @@ o_buttons.forEach(btn => {
                 refNeeded();
                 break;
             case 'pay':
-                action = 'subtract';
+                action = 'refsubtract';
                 refNeeded();
                 break;
             case 'send':
@@ -196,7 +201,7 @@ const refNeeded = () => {
 // numeric keyboard
 
 const bothInputs = [o_user, o_amount];
-let currentInput = undefined;
+let currentInput = o_amount;
 
 bothInputs.forEach(input => {
     input.addEventListener('click', i => {
@@ -220,6 +225,10 @@ keyboard.forEach(key => {
                 operations.classList.remove('hidden');
             }
             movements.classList.add('hidden');
+            
+            if(!messageDisplay.classList.contains('hidden')){
+            messageDisplay.classList.add('hidden');
+            }
         }
     });
 });
@@ -232,48 +241,106 @@ confirm.addEventListener('click', () => {
     refUser = clients.findIndex(client => client.id === o_user.value);
     actUser = clients.findIndex(client => client.id === tempUser);
 
+    function notEnough() {
+        messageDisplay.innerHTML = 'No cuentas con saldo suficiente para realizar ese movimiento.'
+        messageDisplay.classList.remove('hidden');
+        if (window.innerWidth < 861) {
+            operations.classList.remove('hidden');
+            movements.classList.add('hidden');
+        } else {
+            movements.classList.add('hidden');
+        }
+    }
+
+    function barlyEnough() {
+        messageDisplay.innerHTML = 'Complete los datos correctamente.'
+        messageDisplay.classList.remove('hidden');
+    }
+
+    function itsEnough() {
+        messageDisplay.innerHTML = 'Operación realizada con éxito.'
+        messageDisplay.classList.remove('hidden');
+        if (window.innerWidth < 861) {
+            operations.classList.remove('hidden');
+            movements.classList.add('hidden');
+        } else {
+            movements.classList.add('hidden');
+        }
+    }
+
     switch (action) {
+
         case 'add':
-            clients[actUser].saldo += parseInt(o_amount.value);
-            balance.textContent = clients[actUser].saldo.toString();
-            break;
-        case 'subtract':
-            clients[actUser].saldo -= parseInt(o_amount.value);
-            balance.textContent = clients[actUser].saldo.toString();
-            break;
-        case 'refadd':
-            console.log('saldo: ' + clients[refUser].saldo);
-            if (clients[refUser].saldo >= parseInt(o_amount.value)) {
-                clients[refUser].saldo -= parseInt(o_amount.value);
+            if (parseInt(o_amount.value) > 0) {
                 clients[actUser].saldo += parseInt(o_amount.value);
                 balance.textContent = clients[actUser].saldo.toString();
-                console.log('nuevo saldo: ' + clients[refUser].saldo);
-            }
-            break;
-        case 'refsubtract':
-            if (refUser >= 0) {
-                console.log('saldo: ' + clients[refUser].saldo);
-                clients[refUser].saldo += parseInt(o_amount.value);
-                clients[actUser].saldo -= parseInt(o_amount.value);
-                balance.textContent = clients[actUser].saldo.toString();
-                console.log('nuevo saldo: ' + clients[refUser].saldo);
+                itsEnough();
             } else {
-                clients[actUser].saldo -= parseInt(o_amount.value);
-                balance.textContent = clients[actUser].saldo.toString();
+                barlyEnough();
             }
             break;
-    }
 
-    if (!movements.classList.contains('hidden') && window.innerWidth < 861) {
-        operations.classList.remove('hidden');
-        movements.classList.add('hidden');
-        message.textContent = 'SU OPERACIÓN FUE COMPLETADA CON ÉXITO';
-        console.log('message')
+        case 'subtract':
+            if (parseInt(o_amount.value) > 0) {
+                if (clients[actUser].saldo >= parseInt(o_amount.value)) {
+                    clients[actUser].saldo -= parseInt(o_amount.value);
+                    balance.textContent = clients[actUser].saldo.toString();
+                    itsEnough();
+                } else {
+                    notEnough();
+                }
+            } else {
+                barlyEnough();
+            }
+            break;
 
+        case 'refadd':
+            if (parseInt(o_amount.value) > 0 && o_user.value.length > 0) {
+                if (refUser >= 0) {
+                    if (clients[refUser].saldo >= parseInt(o_amount.value)) {
+                        clients[refUser].saldo -= parseInt(o_amount.value);
+                        clients[actUser].saldo += parseInt(o_amount.value);
+                        balance.textContent = clients[actUser].saldo.toString();
+                        console.log(clients[refUser]);
+                        itsEnough();
+
+                    } else {
+                        messageDisplay.innerHTML = 'Operación realizada con éxito. Esperando respuesta de usuario.'
+                        messageDisplay.classList.remove('hidden');
+                        movements.classList.add('hidden');
+                    }
+                } else {
+                    messageDisplay.innerHTML = 'Operación realizada con éxito. Esperando respuesta de usuario.'
+                    messageDisplay.classList.remove('hidden');
+                    movements.classList.add('hidden');
+                }
+            } else {
+                barlyEnough();
+            }
+            break;
+
+        case 'refsubtract':
+            if (parseInt(o_amount.value) > 0 && o_user.value.length > 0) {
+                if (clients[actUser].saldo >= parseInt(o_amount.value)) {
+                    if (refUser >= 0) {
+                        clients[refUser].saldo += parseInt(o_amount.value);
+                        clients[actUser].saldo -= parseInt(o_amount.value);
+                        balance.textContent = clients[actUser].saldo.toString();
+                        console.log(clients[refUser]);
+                    } else {
+                        clients[actUser].saldo -= parseInt(o_amount.value);
+                        balance.textContent = clients[actUser].saldo.toString();
+                    }
+                    itsEnough();
+                } else {
+                    notEnough();
+                }
+            } else {
+                barlyEnough();
+            }
+            break;
     }
 });
-
-
 
 
 
