@@ -6,7 +6,7 @@ clients.forEach(client => {
 
 // Elementos en el header
 const header = document.getElementById('header');
-const welcome = header.querySelectorAll('h1');
+const welcome = header.querySelector('h1');
 
 //Elementos en el login box
 const userbox = document.querySelector('#userbox');
@@ -29,15 +29,20 @@ const movements = document.querySelector('#movements');
 const keyboard = movements.querySelectorAll('.m_item');
 const o_user = document.querySelector('#o_user');
 const o_amount = document.querySelector('#o_amount');
+const reference = movements.querySelector('p');
+const confirm = document.getElementById('confirm');
 
 
 
 // Login
+let tempUser = '';
+let tempPass = '';
+
 const userToPass = userbox.querySelector('input');
 const passwordToPass = passbox.querySelector('input');
 
-let tempUser = '';
-let tempPass = '';
+userToPass.value = '';
+passwordToPass.value = '';
 
 userbtn.addEventListener('click', () => {
     tempUser = userToPass.value;
@@ -54,46 +59,110 @@ userToPass.addEventListener('keydown', (event) => {
     }
 });
 
+
+//WHAT IF USER DOESN'T EXIST??
+
 passbtn.addEventListener('click', () => {
     tempPass = passwordToPass.value;
+    let counter = 0;
     for (const client of clients) {
         if (client.id === tempUser && client.password === tempPass) {
+            balance.textContent = client.saldo.toString();//set Balance
             passbox.classList.add('hidden');
             operations.classList.remove('hidden');
-            welcome[0].textContent = `Bienvenido ${client.name} ${client.lastname}`;
-            welcome[1].textContent = `Bienvenido ${client.name} ${client.lastname}`;
-
-            if (window.innerWidth < 768) {
-                welcome[1].classList.remove('hidden');
-            } else {
-                welcome[0].classList.remove('hidden');
-            }
+            welcome.textContent = `Bienvenido ${client.name} ${client.lastname}`;
+            welcome.classList.remove('hidden');
+            counter = 1;
         }
+    }
+    if (counter == 0) {
+        generateUser();
     }
 });
 
 passwordToPass.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         tempPass = passwordToPass.value;
+        let counter = 0;
         for (const client of clients) {
             if (client.id === tempUser && client.password === tempPass) {
                 passbox.classList.add('hidden');
                 operations.classList.remove('hidden');
-                welcome[0].textContent = `Bienvenido ${client.name} ${client.lastname}`;
-                welcome[1].textContent = `Bienvenido ${client.name} ${client.lastname}`;
-
-                if (window.innerWidth < 768) {
-                    welcome[1].classList.remove('hidden');
-                } else {
-                    welcome[0].classList.remove('hidden');
-                }
+                welcome.textContent = `Bienvenido ${client.name} ${client.lastname}`;
+                welcome.classList.remove('hidden');
+                counter = 1;
             }
+        }
+        if (counter == 0) {
+            generateUser();
         }
     }
 });
 
 // Generar nuevo cliente (?)
 
+function generateUser() {
+    passbox.classList.add('hidden');
+    userToPass.value = '';
+    passwordToPass.value = '';
+    const noUser = window.confirm('Cliente no registrado. Desea generar un cliente temporal?');
+    if (noUser) {
+        console.log('we\'re ready');
+    } else {
+        location.reload();
+    }
+}
+
+// Funcionamiento de botones de operaciones
+
+const o_buttons = [add, withdraw, request, pay, send, exit];
+let action = '';
+
+o_buttons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        switch (btn.id) {
+            case 'exit':
+                location.reload();
+                break;
+            case 'add':
+                action = 'add';
+                noRefNeeded();
+                break;
+            case 'withdraw':
+                action = 'subtract';
+                noRefNeeded();
+                break;
+            case 'request':
+                action = 'refadd';
+                refNeeded();
+                break;
+            case 'pay':
+                action = 'subtract';
+                refNeeded();
+                break;
+            case 'send':
+                action = 'refsubtract';
+                refNeeded();
+                break;
+        }
+    });
+});
+
+const noRefNeeded = () => {
+    o_amount.value = '';
+    reference.classList.add('hidden');
+    o_user.classList.add('hidden');
+    movements.classList.remove('hidden');
+    checkScreenWidth();
+}
+
+const refNeeded = () => {
+    o_amount.value = '';
+    reference.classList.remove('hidden');
+    o_user.classList.remove('hidden');
+    movements.classList.remove('hidden');
+    checkScreenWidth();
+}
 
 // Rescata teclado numérico
 
@@ -108,30 +177,66 @@ keyboard.forEach(key => {
                 const newValue = currentValue.slice(0, -1); // Remove the last character
                 o_amount.value = newValue;
             }
-        }
-    });
-});
-
-// Funcionamiento de botones de operaciones
-
-const o_buttons = [add, withdraw, request, pay, send, exit];
-
-o_buttons.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-
-        //Devuelve al inicio al presionar EXIT
-        if (btn.id !== 'exit') {
-            movements.classList.remove('hidden');
-            o_amount.value = '';
-        } else {
-            operations.classList.add('hidden');
-            welcome.classList.add('hidden');
+        } else if (key.firstElementChild.textContent === 'REGRESAR') {
+            if (operations.classList.contains('hidden')) {
+                operations.classList.remove('hidden');
+            }
             movements.classList.add('hidden');
-            userbox.classList.remove('hidden');
         }
     });
 });
 
+// Actualizar saldo en clientes
+
+confirm.addEventListener('click', () => {
+
+    refUser = clients.findIndex(client => client.id === o_user.value);
+    actUser = clients.findIndex(client => client.id === tempUser);
+
+    switch (action) {
+        case 'add':
+            clients[actUser].saldo += parseInt(o_amount);
+            break;
+        case 'subtract':
+            clients[actUser].saldo -= parseInt(o_amount);
+            break;
+        case 'refadd':
+            if (clients[refUser].saldo >= parseInt(o_amount)) {
+                clients[refUser].saldo -= parseInt(o_amount);
+                clients[actUser].saldo += parseInt(o_amount);
+            }
+            break;
+        case 'refsubtract':
+            if (clients[refUser].id) {
+                clients[refUser].saldo += parseInt(o_amount);
+                clients[actUser].saldo -= parseInt(o_amount);
+            } else {
+                clients[actUser].saldo -= parseInt(o_amount);
+            }
+            break;
+    }
+});
 
 
+//organize sections within different screen size :3
 
+function checkScreenWidth() {
+    if (movements) {
+        if (window.innerWidth < 850) {
+            operations.classList.add('hidden');
+            keyboard.forEach(key => {
+                key.addEventListener('click', (e) => {
+                    if (key.firstElementChild.textContent === 'REGRESAR') {
+                        operations.classList.remove('hidden');
+                        movements.classList.add('hidden');
+                    }
+                })
+            });
+        } else {
+            operations.classList.remove('hidden');
+        }
+    }
+}
+
+//si hay cambio de tamaño
+window.addEventListener('resize', checkScreenWidth);

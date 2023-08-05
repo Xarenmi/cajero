@@ -12,7 +12,6 @@
 <body>
     <header>
         <div id="header">
-            <h1 class="hidden">Bienvenido</h1>
             <img src="src/icons/XB_Logo.png" alt="XIVI BANK LOGO" id="logo" />
             <h1 class="hidden">Bienvenido</h1>
         </div>
@@ -26,16 +25,20 @@
         </div>
         <div id="passwordbox" class="container hidden">
             <p> CONTRASEÑA:</p>
-            <input id="password" type="text" placeholder="">
+            <input id="password" type="password" placeholder="">
             <button id="checkPassword"> INICIAR SESIÓN </button>
         </div>
     </section>
 
+    <section id="newUser">
+
+    </section>
+
     <main class="wrapper">
-        <section id="operations" class="">
+        <section id="operations" class="hidden">
             <div class="container" id="balance">
                 <img src="src/icons/account.svg" alt="Saldo" />
-                <p id="amount">$000</p>
+                <p>$<span id="amount">000</span></p>
             </div>
             <div class="container">
                 <div class="o_item" id="add">
@@ -69,10 +72,10 @@
 
         <section class="hidden" id="movements">
             <div class="container">
-                <div class="">
-                    <p></p>
+                <div>
+                    <p>USUARIO O REFERENCIA:</p>
                     <input id="o_user">
-                    <p>Ingrese el monto de la operación:</p>
+                    <p>MONTO:</p>
                     <input id="o_amount">
                 </div>
             </div>
@@ -119,7 +122,7 @@
                 </div>
             </div>
             <div class="container">
-                <button>CONFIRMAR</button>
+                <button id="confirm">CONFIRMAR</button>
             </div>
         </section>
     </main>

@@ -5,7 +5,7 @@ const clients = [
         lastname: 'Zavala', 
         birthday: '9/DIC/1993', 
         password: 'hi', 
-        saldo: '0' 
+        saldo: 900 
     }, 
     { 
         id: '12368794',
@@ -13,7 +13,7 @@ const clients = [
         lastname: 'Grimes', 
         birthday: '04/MAY/1997', 
         password: 'password', 
-        saldo: '0' 
+        saldo: 15 
     }, 
     { 
         id: '12345678',
@@ -21,5 +21,5 @@ const clients = [
         lastname: 'Scorpio', 
         birthday: '3/NOV/1996' ,  
         password: '', 
-        saldo: '0' 
+        saldo: 1200 
     }]
