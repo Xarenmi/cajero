@@ -1,28 +1,28 @@
 // Mostrar mockClients
 const clients = [
-    { 
-        id: '12378710', 
-        name: 'Margo', 
-        lastname: 'Zavala', 
-        birthday: '9/DIC/1993', 
-        password: 'hi', 
-        saldo: 900 
-    }, 
-    { 
+    {
+        id: '12378710',
+        name: 'Margo',
+        lastname: 'Zavala',
+        birthday: '9/DIC/1993',
+        password: 'hi',
+        saldo: 900
+    },
+    {
         id: '12368794',
-        name: 'Frank', 
-        lastname: 'Grimes', 
-        birthday: '04/MAY/1997', 
-        password: 'password', 
-        saldo: 15 
-    }, 
-    { 
+        name: 'Frank',
+        lastname: 'Grimes',
+        birthday: '04/MAY/1997',
+        password: 'password',
+        saldo: 15
+    },
+    {
         id: '12345678',
-        name: 'Hank', 
-        lastname: 'Scorpio', 
-        birthday: '3/NOV/1996' ,  
-        password: '', 
-        saldo: 1200 
+        name: 'Hank',
+        lastname: 'Scorpio',
+        birthday: '3/NOV/1996',
+        password: '',
+        saldo: 1200
     }]
 
 clients.forEach(client => {
@@ -57,7 +57,8 @@ const o_amount = document.querySelector('#o_amount');
 const reference = movements.querySelector('p');
 const confirm = document.getElementById('confirm');
 
-
+// Footer
+const message = document.getElementById('message')
 
 // Login
 let tempUser = '';
@@ -192,17 +193,27 @@ const refNeeded = () => {
     checkScreenWidth();
 }
 
-// Rescata teclado numérico
+// numeric keyboard
+
+const bothInputs = [o_user, o_amount];
+let currentInput = undefined;
+
+bothInputs.forEach(input => {
+    input.addEventListener('click', i => {
+        currentInput = input;
+    });
+});
 
 keyboard.forEach(key => {
-    key.addEventListener('click', (e) => {
+    key.addEventListener('click', e => {
+
         if (key.firstElementChild.textContent.length === 1) {
-            o_amount.value += key.firstElementChild.textContent; // Add a character
+            currentInput.value += key.firstElementChild.textContent; // Add a character
         } else if (key.firstElementChild.textContent === 'BORRAR') {
-            currentValue = o_amount.value
-            if (o_amount.value.length > 0) {
+            currentValue = currentInput.value
+            if (currentInput.value.length > 0) {
                 const newValue = currentValue.slice(0, -1); // Remove the last character
-                o_amount.value = newValue;
+                currentInput.value = newValue;
             }
         } else if (key.firstElementChild.textContent === 'REGRESAR') {
             if (operations.classList.contains('hidden')) {
@@ -212,6 +223,7 @@ keyboard.forEach(key => {
         }
     });
 });
+
 
 // Actualizar saldo en clientes
 
@@ -230,7 +242,7 @@ confirm.addEventListener('click', () => {
             balance.textContent = clients[actUser].saldo.toString();
             break;
         case 'refadd':
-                console.log('saldo: ' + clients[refUser].saldo);
+            console.log('saldo: ' + clients[refUser].saldo);
             if (clients[refUser].saldo >= parseInt(o_amount.value)) {
                 clients[refUser].saldo -= parseInt(o_amount.value);
                 clients[actUser].saldo += parseInt(o_amount.value);
@@ -251,7 +263,18 @@ confirm.addEventListener('click', () => {
             }
             break;
     }
+
+    if (!movements.classList.contains('hidden') && window.innerWidth < 861) {
+        operations.classList.remove('hidden');
+        movements.classList.add('hidden');
+        message.textContent = 'SU OPERACIÓN FUE COMPLETADA CON ÉXITO';
+        console.log('message')
+
+    }
 });
+
+
+
 
 
 //'REGRESAR' button function
@@ -267,7 +290,7 @@ function checkScreenWidth() {
                 }
             })
         });
-    } else if (!movements.classList.contains('hidden') && window.innerWidth > 860 && operations.classList.contains('hidden')){
+    } else if (!movements.classList.contains('hidden') && window.innerWidth > 860 && operations.classList.contains('hidden')) {
         operations.classList.remove('hidden');
     }
 }
