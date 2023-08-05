@@ -1,7 +1,7 @@
 // Mostrar mockClients
 
 clients.forEach(client => {
-    console.log(client.id, client.password);
+    console.log('user: ' + client.id + ', password: ' + client.password);
 });
 
 // Elementos en el header
@@ -86,6 +86,7 @@ passwordToPass.addEventListener('keydown', (event) => {
         let counter = 0;
         for (const client of clients) {
             if (client.id === tempUser && client.password === tempPass) {
+                balance.textContent = client.saldo.toString();
                 passbox.classList.add('hidden');
                 operations.classList.remove('hidden');
                 welcome.textContent = `Bienvenido ${client.name} ${client.lastname}`;
@@ -150,6 +151,7 @@ o_buttons.forEach(btn => {
 
 const noRefNeeded = () => {
     o_amount.value = '';
+    o_user.value = '';
     reference.classList.add('hidden');
     o_user.classList.add('hidden');
     movements.classList.remove('hidden');
@@ -158,6 +160,7 @@ const noRefNeeded = () => {
 
 const refNeeded = () => {
     o_amount.value = '';
+    o_user.value = '';
     reference.classList.remove('hidden');
     o_user.classList.remove('hidden');
     movements.classList.remove('hidden');
@@ -168,7 +171,6 @@ const refNeeded = () => {
 
 keyboard.forEach(key => {
     key.addEventListener('click', (e) => {
-        console.log(key.firstElementChild.textContent)
         if (key.firstElementChild.textContent.length === 1) {
             o_amount.value += key.firstElementChild.textContent; // Add a character
         } else if (key.firstElementChild.textContent === 'BORRAR') {
@@ -195,48 +197,56 @@ confirm.addEventListener('click', () => {
 
     switch (action) {
         case 'add':
-            clients[actUser].saldo += parseInt(o_amount);
+            clients[actUser].saldo += parseInt(o_amount.value);
+            balance.textContent = clients[actUser].saldo.toString();
             break;
         case 'subtract':
-            clients[actUser].saldo -= parseInt(o_amount);
+            clients[actUser].saldo -= parseInt(o_amount.value);
+            balance.textContent = clients[actUser].saldo.toString();
             break;
         case 'refadd':
-            if (clients[refUser].saldo >= parseInt(o_amount)) {
-                clients[refUser].saldo -= parseInt(o_amount);
-                clients[actUser].saldo += parseInt(o_amount);
+                console.log('saldo: ' + clients[refUser].saldo);
+            if (clients[refUser].saldo >= parseInt(o_amount.value)) {
+                clients[refUser].saldo -= parseInt(o_amount.value);
+                clients[actUser].saldo += parseInt(o_amount.value);
+                balance.textContent = clients[actUser].saldo.toString();
+                console.log('nuevo saldo: ' + clients[refUser].saldo);
             }
             break;
         case 'refsubtract':
-            if (clients[refUser].id) {
-                clients[refUser].saldo += parseInt(o_amount);
-                clients[actUser].saldo -= parseInt(o_amount);
+            if (refUser >= 0) {
+                console.log('saldo: ' + clients[refUser].saldo);
+                clients[refUser].saldo += parseInt(o_amount.value);
+                clients[actUser].saldo -= parseInt(o_amount.value);
+                balance.textContent = clients[actUser].saldo.toString();
+                console.log('nuevo saldo: ' + clients[refUser].saldo);
             } else {
-                clients[actUser].saldo -= parseInt(o_amount);
+                clients[actUser].saldo -= parseInt(o_amount.value);
+                balance.textContent = clients[actUser].saldo.toString();
             }
             break;
     }
 });
 
 
-//organize sections within different screen size :3
+//'REGRESAR' button function
 
 function checkScreenWidth() {
-    if (movements) {
-        if (window.innerWidth < 850) {
-            operations.classList.add('hidden');
-            keyboard.forEach(key => {
-                key.addEventListener('click', (e) => {
-                    if (key.firstElementChild.textContent === 'REGRESAR') {
-                        operations.classList.remove('hidden');
-                        movements.classList.add('hidden');
-                    }
-                })
-            });
-        } else {
-            operations.classList.remove('hidden');
-        }
+    if (!movements.classList.contains('hidden') && window.innerWidth < 861) {
+        operations.classList.add('hidden');
+        keyboard.forEach(key => {
+            key.addEventListener('click', (e) => {
+                if (key.firstElementChild.textContent === 'REGRESAR') {
+                    operations.classList.remove('hidden');
+                    movements.classList.add('hidden');
+                }
+            })
+        });
+    } else if (!movements.classList.contains('hidden') && window.innerWidth > 860 && operations.classList.contains('hidden')){
+        operations.classList.remove('hidden');
     }
 }
+
 
 //si hay cambio de tamaño
 window.addEventListener('resize', checkScreenWidth);
